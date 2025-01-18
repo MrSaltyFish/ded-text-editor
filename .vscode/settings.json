@@ -64,6 +64,7 @@
     "sdl_messagebox.h": "c",
     "sdl_log.h": "c",
     "stb_image.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "sstream": "c"
   }
 }

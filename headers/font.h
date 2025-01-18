@@ -3,6 +3,11 @@
 
 #define FONT_WIDTH 128
 #define FONT_HEIGHT 64
+#define FONT_COLS 18
+#define FONT_ROWS 7
+#define FONT_CHAR_WIDTH (FONT_WIDTH / FONT_COLS)
+#define FONT_CHAR_HEIGHT (FONT_HEIGHT / FONT_ROWS)
+#define FONT_SCALE 5
 
 // Generated from `.\charmap-oldschool_white.png` - 128 x 64
 
