@@ -13,11 +13,7 @@ $(BUILD_DIR)/$(OUT): $(SRC)
 # Default target: Build and then run
 all: $(BUILD_DIR)/$(OUT)
 	# Run the compiled program
-	@if [ "$(OS)" = "Windows_NT" ]; then \
-		$(BUILD_DIR)/$(OUT).exe; \
-	else \
-		$(BUILD_DIR)/$(OUT); \
-	fi
+	$(BUILD_DIR)/$(OUT)
 
 clean:
 	rm -rf $(BUILD_DIR)
