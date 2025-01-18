@@ -1,0 +1,3 @@
+[Log] [App] SDL-LOG: This is an informational log.
+[Wrn] [Asr] SDL-LOG: This is a warning log.
+[Err] [Err] SDL-LOG: This is an error log.

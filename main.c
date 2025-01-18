@@ -14,17 +14,8 @@
 
 #include "headers/font.h"
 #define STB_IMAGE_IMPLEMENTATION
+#include "headers/sdllogger.h"
 #include "headers/stb_image.h"
-
-/*
- * Custom log function that writes logs to a file
- */
-void my_log_function(void *userdata, int category, SDL_LogPriority priority,
-					 const char *message) {
-	FILE *log_file = (FILE *)userdata;
-	fprintf(log_file, "SDL LOG [%d]: %s\n", priority, message);
-}
-
 /*
  * SDL Check Code - Basically panics if the code is negative, as that is the
  * indication of a SDL error. It is a standard thing to do.
@@ -45,6 +36,8 @@ void scc(int code) {
 void *scp(void *ptr) {
 	if (ptr == NULL) {
 		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL ERROR: %s\n", SDL_GetError());
+
 		exit(1);
 	}
 	return ptr;
@@ -88,6 +81,11 @@ SDL_Surface *surface_from_file(const char *file_path) {
 	return surface;
 }
 
+/*
+ * This function is for rendering text
+ */
+void render_text(const char *text, int x, int y) {}
+
 int main(int argc, char **argv) {
 	SDL_Log("Starting Initialization...\n");
 
@@ -98,10 +96,14 @@ int main(int argc, char **argv) {
 		SDL_Quit();
 		return 1;
 	}
+	setbuf(log_file, NULL);
+	// Set the custom log function
+	SDL_LogSetOutputFunction(textLogger, log_file);
+
 	// Log messages with different priorities
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "This is an informational log.");
-	SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "This is a warning log.");
-	SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "This is an error log.");
+	SDL_LogWarn(SDL_LOG_CATEGORY_ASSERT, "This is a warning log.");
+	SDL_LogError(SDL_LOG_CATEGORY_ERROR, "This is an error log.");
 
 	/********************************
 	 *		SDL Starts here			*
@@ -133,10 +135,21 @@ int main(int argc, char **argv) {
 					quit = true;
 				} break;
 			}
+
 			scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255));
 			scc(SDL_RenderClear(renderer));
-			scc(SDL_RenderCopy(renderer, font_texture, &font_rect, &font_rect));
+
+			SDL_Rect output_rect = {
+				.x = 0,
+				.y = 0,
+				.w = font_surface->w * 5,
+				.h = font_surface->h * 5,
+			};
+			scc(SDL_RenderCopy(renderer, font_texture, &font_rect,
+							   &output_rect));
 			SDL_RenderPresent(renderer);
+			SDL_LogInfo(SDL_LOG_CATEGORY_INPUT, "SDL: Rendered!");
+			fflush(log_file);
 		}
 	}
 
