@@ -1,5 +1,15 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -pedantic -ggdb `pkg-config --cflags sdl2`
-LIBS=`pkg-config --libs sdl2` -lm
-te: main.c
-	$(CC) $(CFLAGS) -o te main.c $(LIBS)
+SRC = main.c
+OUT = te
+CFLAGS = -Wall -Wextra -std=c11 -pedantic -ggdb `pkg-config --cflags SDL3`
+LIBS = `pkg-config --libs SDL3` -lm
+BUILD_DIR = build
+
+$(BUILD_DIR)/$(OUT): $(SRC)
+	@mkdir -p $(BUILD_DIR)  # Create build directory if it doesn't exist
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(OUT) $(SRC) $(LIBS)
+
+all: $(BUILD_DIR)/$(OUT)
+
+clean:
+	rm -rf $(BUILD_DIR)
