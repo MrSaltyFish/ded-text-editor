@@ -13,7 +13,7 @@ $(BUILD_DIR)/$(OUT): $(SRC)
 # Default target: Build and then run
 all: $(BUILD_DIR)/$(OUT)
 	# Run the compiled program
-	$(BUILD_DIR)/$(OUT)
+	./$(BUILD_DIR)/$(OUT)
 
 clean:
 	rm -rf $(BUILD_DIR)

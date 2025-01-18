@@ -74,6 +74,8 @@ int main(int argc, char **argv) {
 	}
 
 	// Clean up and quit SDL
+	SDL_DestroyTexture(texture);
+	SDL_FreeSurface(surface);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
