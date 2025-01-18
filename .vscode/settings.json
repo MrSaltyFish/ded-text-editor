@@ -59,6 +59,10 @@
   "C_Cpp.default.compilerPath": "",
   "files.associations": {
     "sdl.h": "c",
-    "math.h": "c"
+    "math.h": "c",
+    "font.h": "c",
+    "sdl_messagebox.h": "c",
+    "sdl_log.h": "c",
+    "stb_image.h": "c"
   }
 }
