@@ -22,9 +22,11 @@
 #define ASCII_DISPLAY_LOW 32
 #define ASCII_DISPLAY_HIGH 126
 
-#define UNHEX(color)                                          \
+#define ALPHA(color) ((color) >> (8 * 3)) & 0xFF
+
+#define UNHEXA(color)                                         \
 	((color) >> (8 * 0)) & 0xFF, ((color) >> (8 * 1)) & 0xFF, \
-		((color) >> (8 * 2)) & 0xFF, ((color) >> (8 * 3)) & 0xFF,
+		((color) >> (8 * 2)) & 0xFF
 
 /*
  * SDL Check Code - Basically panics if the code is negative, as that is the
@@ -33,7 +35,7 @@
  */
 void scc(int code) {
 	if (code < 0) {
-		fprintf(stderr, "SDL ERROR: %s\n", SDL_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL ERROR: %s\n", SDL_GetError());
 		exit(1);
 	}
 }
@@ -136,7 +138,7 @@ Font font_load_from_file(SDL_Renderer *renderer, const char *file_path) {
 /*
  * This function is for rendering characters at a given position.
  */
-void render_char(SDL_Renderer *renderer, Font *font, char c, Vec2f pos,
+void render_char(SDL_Renderer *renderer, const Font *font, char c, Vec2f pos,
 				 float scale) {
 	SDL_Rect dst = {
 		.x = (int)floorf(pos.x),
@@ -152,15 +154,27 @@ void render_char(SDL_Renderer *renderer, Font *font, char c, Vec2f pos,
 					   &dst));
 }
 
-void render_text_sized(SDL_Renderer *renderer, Font *font, const char *text,
-					   size_t text_size, Vec2f pos, Uint32 color, float scale) {
+void set_texture_color(SDL_Texture *texture, Uint32 color) {
 	int r = (color >> (8 * 0)) & 0xff;
 	int g = (color >> (8 * 1)) & 0xff;
 	int b = (color >> (8 * 2)) & 0xff;
 	int a = (color >> (8 * 3)) & 0xff;
+	scc(SDL_SetTextureColorMod(texture, r, g, b));
+	scc(SDL_SetTextureAlphaMod(texture, a));
+}
 
-	scc(SDL_SetTextureColorMod(font->spritesheet, r, g, b));
-	scc(SDL_SetTextureAlphaMod(font->spritesheet, a));
+void render_text_sized(SDL_Renderer *renderer, Font *font, const char *text,
+					   size_t text_size, Vec2f pos, Uint32 color, float scale) {
+	// Replaced by set_texture_color()
+	// int r = (color >> (8 * 0)) & 0xff;
+	// int g = (color >> (8 * 1)) & 0xff;
+	// int b = (color >> (8 * 2)) & 0xff;
+	// int a = (color >> (8 * 3)) & 0xff;
+
+	// scc(SDL_SetTextureColorMod(font->spritesheet, r, g, b));
+	// scc(SDL_SetTextureAlphaMod(font->spritesheet, a));
+
+	set_texture_color(font->spritesheet, color);
 
 	Vec2f pen = pos;
 	for (size_t i = 0; i < text_size; i++) {
@@ -190,22 +204,39 @@ size_t buffer_cursor = 0;
 /*
  * This is code to just display the cursor
  */
-void render_cursor(SDL_Renderer *renderer, Uint32 color) {
+
+void render_cursor(SDL_Renderer *renderer, const Font *font, Uint32 color) {
+	Vec2f pos = vec2f(buffer_cursor * FONT_CHAR_WIDTH * FONT_SCALE, 0);
 	const SDL_Rect rect = {
-		.x = (int)floorf(buffer_cursor * FONT_CHAR_WIDTH * FONT_SCALE),
-		.y = 0,
+		.x = (int)floorf(pos.x),
+		.y = (int)floorf(pos.y),
 		.w = FONT_CHAR_WIDTH * FONT_SCALE,
 		.h = FONT_CHAR_HEIGHT * FONT_SCALE,
 	};
 
-	int r = (color >> (8 * 0)) & 0xff;
-	int g = (color >> (8 * 1)) & 0xff;
-	int b = (color >> (8 * 2)) & 0xff;
-	int a = (color >> (8 * 3)) & 0xff;
+	// int r = (color >> (8 * 0)) & 0xff;
+	// int g = (color >> (8 * 1)) & 0xff;
+	// int b = (color >> (8 * 2)) & 0xff;
+	// int a = (color >> (8 * 3)) & 0xff;
+
+	int r = 0xFF;
+	int g = 0xFF;
+	int b = 0xFF;
+	int a = 0xFF;
 
 	scc(SDL_SetRenderDrawColor(renderer, r, g, b, a));
 	scc(SDL_RenderFillRect(renderer, &rect));
+
+	set_texture_color(font->spritesheet, 0xFF000000);
+
+	if (buffer_cursor < buffer_size) {
+		render_char(renderer, font, buffer[buffer_cursor], pos, FONT_SCALE);
+	}
 }
+
+// TODO: move the cursor around
+// TODO: multiple lines
+// TODO: Save/Load file
 
 /********************************
  *		MAIN Starts here		*
@@ -219,7 +250,6 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 	// Set the custom log function
-	// setbuf(log_file, NULL);
 	SDL_LogSetOutputFunction(textLogger, log_file);
 
 	// Log messages with different priorities
@@ -242,9 +272,6 @@ int main(int argc, char **argv) {
 	SDL_Renderer *renderer =
 		scp(SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED));
 
-	// SDL_Surface *font_surface =
-	// 	surface_from_file("./fonts/charmap-oldschool_white.png");
-
 	Font font =
 		font_load_from_file(renderer, "./fonts/charmap-oldschool_white.png");
 
@@ -263,6 +290,20 @@ int main(int argc, char **argv) {
 								buffer_size -= 1;
 								buffer_cursor = buffer_size;
 							}
+						} break;
+						case SDLK_LEFT: {
+							if (buffer_cursor > 0) {
+								buffer_cursor -= 1;
+							}
+						} break;
+						case SDLK_RIGHT: {
+							if (buffer_cursor < buffer_size) {
+								buffer_cursor += 1;
+							}
+						} break;
+						case SDLK_UP: {
+						} break;
+						case SDLK_DOWN: {
 						} break;
 					}
 				} break;
@@ -287,7 +328,7 @@ int main(int argc, char **argv) {
 
 			render_text_sized(renderer, &font, buffer, buffer_size,
 							  vec2f(0.0, 0.0), 0xFF0000FF, FONT_SCALE);
-			render_cursor(renderer, 0xFFFFFFFF);
+			render_cursor(renderer, &font, 0xFFFFFFFF);
 
 			SDL_RenderPresent(renderer);
 			// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL: Rendered!");

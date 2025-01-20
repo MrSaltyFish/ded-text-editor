@@ -27,3 +27,7 @@ build: $(BUILD_DIR)/$(OUT)
 
 temp:
 	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(TEMP_OUT) $(TEMP_SRC) $(LIBS)
+
+# Run the compiled program
+run: $(BUILD_DIR)/$(OUT)
+	./$(BUILD_DIR)/$(OUT)
