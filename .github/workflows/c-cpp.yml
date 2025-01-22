@@ -1,4 +1,4 @@
-name: Build SDL2 Project
+name: Build te (Ubuntu)
 
 on: [push]
 

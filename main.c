@@ -245,7 +245,8 @@ void buffer_delete(void) {
  */
 
 void render_cursor(SDL_Renderer *renderer, const Font *font) {
-	Vec2f pos = vec2f(buffer_cursor * FONT_CHAR_WIDTH * FONT_SCALE, 0);
+	Vec2f pos =
+		vec2f((float)buffer_cursor * FONT_CHAR_WIDTH * FONT_SCALE, 0.0f);
 	const SDL_Rect rect = {
 		.x = (int)floorf(pos.x),
 		.y = (int)floorf(pos.y),
@@ -273,21 +274,22 @@ void render_cursor(SDL_Renderer *renderer, const Font *font) {
 	}
 }
 
+// TODO: Multiple lines
+// TODO: Save/Load file
 // TODO: Jump forward/backward by a word
 // TODO: Delete a word
-// TODO: move the cursor around
-// TODO: multiple lines
-// TODO: Save/Load file
+// TODO: Blinking cursor
 
-int main1(int argc, char **argv) {
-	buffer_insert_text_before_cursor("Hello, World");
-	buffer_cursor = 5;
-	buffer_insert_text_before_cursor("Foo, bar");
-	char text[100] = {0};
-	strcpy(text, buffer);
-	int i;
-	return 0;
-}
+// // Debug Purposes
+// int main1(int argc, char **argv) {
+// 	buffer_insert_text_before_cursor("Hello, World");
+// 	buffer_cursor = 5;
+// 	buffer_insert_text_before_cursor("Foo, bar");
+// 	char text[100] = {0};
+// 	strcpy(text, buffer);
+// 	int i;
+// 	return 0;
+// }
 
 /********************************
  *		MAIN Starts here		*
