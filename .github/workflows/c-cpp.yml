@@ -22,10 +22,8 @@ jobs:
     # Fix pkg-config issue with lowercase `sdl2.pc`
     - name: Adjust PKG_CONFIG_PATH
       run: |
-        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
-        if [ -f /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc ]; then
-          ln -sf /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/SDL2.pc
-        fi
+        echo "export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+
 
     - name: Rename sdl2.pc to SDL2.pc
       run: |
