@@ -8,19 +8,26 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    # - name: configure
-      # run: ./configure
 
-    # Install SDL2 and other dependencies
+    # Install SDL2 and dependencies
     - name: Install SDL2
       run: |
         sudo apt-get update
         sudo apt-get install -y libsdl2-dev libsdl2-2.0-0
 
-    - name: make all
+    # Fix pkg-config issue with lowercase `sdl2.pc`
+    - name: Adjust PKG_CONFIG_PATH
+      run: |
+        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+        if [ -f /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc ]; then
+          ln -sf /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/SDL2.pc
+        fi
+
+    # Compile the project
+    - name: Build
       run: make all
+
