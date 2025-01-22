@@ -1,35 +1,32 @@
-name: C/C++ CI
+name: Build SDL2 Project
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Install SDL2 and dependencies
-    - name: Install SDL2
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libsdl2-dev libsdl2-2.0-0
+      - name: Set up SDL2 dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y libsdl2-dev
 
-    # Fix pkg-config issue with lowercase `sdl2.pc`
-    - name: Adjust PKG_CONFIG_PATH
-      run: |
-        echo "export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
+      - name: Rename sdl2.pc to SDL2.pc
+        run: |
+          sudo mv /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/SDL2.pc
 
+      - name: Set PKG_CONFIG_PATH
+        run: |
+          echo "export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
-    - name: Rename sdl2.pc to SDL2.pc
-      run: |
-        sudo mv /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/SDL2.pc
+      - name: Build project with Make
+        run: |
+          make build
 
-    # Compile the project
-    - name: Build
-      run: make all
-
+      - name: Clean up
+        run: |
+          make clean
