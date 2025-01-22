@@ -15,5 +15,12 @@ jobs:
     - uses: actions/checkout@v4
     # - name: configure
       # run: ./configure
+
+    # Install SDL2 and other dependencies
+    - name: Install SDL2
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev libsdl2-2.0-0
+
     - name: make all
       run: make all

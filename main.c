@@ -273,6 +273,8 @@ void render_cursor(SDL_Renderer *renderer, const Font *font) {
 	}
 }
 
+// TODO: Jump forward/backward by a word
+// TODO: Delete a word
 // TODO: move the cursor around
 // TODO: multiple lines
 // TODO: Save/Load file
