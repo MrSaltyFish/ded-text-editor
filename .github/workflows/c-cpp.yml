@@ -27,6 +27,10 @@ jobs:
           ln -sf /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/SDL2.pc
         fi
 
+    - name: Rename sdl2.pc to SDL2.pc
+      run: |
+        sudo mv /usr/lib/x86_64-linux-gnu/pkgconfig/sdl2.pc /usr/lib/x86_64-linux-gnu/pkgconfig/SDL2.pc
+
     # Compile the project
     - name: Build
       run: make all
