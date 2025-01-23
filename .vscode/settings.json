@@ -57,6 +57,8 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "la.h": "c"
+    "la.h": "c",
+    "editor.h": "c",
+    "vector": "c"
   }
 }

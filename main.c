@@ -303,14 +303,11 @@ int main(int argc, char **argv) {
 				case SDL_KEYDOWN: {
 					switch (event.key.keysym.sym) {
 						case SDLK_BACKSPACE: {
-							line_backspace(&line, cursor);
-							if (cursor > 0) {
-								cursor -= 1;
-							}
+							line_backspace(&line, &cursor);
 
 						} break;
 						case SDLK_DELETE: {
-							line_delete(&line, cursor);
+							line_delete(&line, &cursor);
 						} break;
 						case SDLK_LEFT: {
 							if (cursor > 0) {
@@ -332,8 +329,7 @@ int main(int argc, char **argv) {
 				case SDL_TEXTINPUT: {
 					SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
 								"Received text input: %s", event.text.text);
-					line_insert_text_before(&line, event.text.text, cursor);
-					cursor += strlen(event.text.text);
+					line_insert_text_before(&line, event.text.text, &cursor);
 				} break;
 			}
 

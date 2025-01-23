@@ -9,9 +9,9 @@ typedef struct {
 	size_t size;
 } Line;
 
-void line_insert_text_before(Line *line, const char *text, size_t col);
-void line_backspace(Line *line, size_t col);
-void line_delete(Line *line, size_t col);
+void line_insert_text_before(Line *line, const char *text, size_t *col);
+void line_backspace(Line *line, size_t *col);
+void line_delete(Line *line, size_t *col);
 
 typedef struct {
 	Line *lines;
@@ -22,6 +22,7 @@ typedef struct {
 
 } Editor;
 
+void editor_push_new_line(Editor *editor);
 void editor_insert_text_before_cursor(Editor *editor, const char *text);
 void editor_backspace(Editor *editor);
 void editor_delete(Editor *editor);
