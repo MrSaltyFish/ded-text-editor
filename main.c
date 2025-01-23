@@ -295,16 +295,26 @@ int main(int argc, char **argv) {
 							}
 						} break;
 						case SDLK_RIGHT: {
-							editor.cursor_col += 1;
+							// editor.cursor_col += 1;
 
-							// if (editor.cursor_col <
-							// 	editor.lines[editor.cursor_row].size) {
-							// 	editor.cursor_col += 1;
-							// }
+							if (editor.cursor_col <
+								editor.lines[editor.cursor_row].size) {
+								editor.cursor_col += 1;
+							}
 						} break;
 						case SDLK_UP: {
+							if (editor.cursor_row > 0) {
+								editor.cursor_row -= 1;
+							}
 						} break;
 						case SDLK_DOWN: {
+							if (editor.cursor_row < editor.size) {
+								editor.cursor_row += 1;
+							}
+						} break;
+						case SDLK_RETURN:
+						case SDLK_RETURN2: {
+							editor_insert_new_line(&editor);
 						} break;
 					}
 				} break;
@@ -318,19 +328,17 @@ int main(int argc, char **argv) {
 
 			scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0));
 			scc(SDL_RenderClear(renderer));
-			// char a[] = "Hello";
-			// render_text_sized(renderer, &font, a, strlen(a), vec2f(0.0, 0.0),
-			// 				  0xFFFFFFFF, FONT_SCALE);
 
 			for (size_t row = 0; row < editor.size; ++row) {
 				const Line *line = editor.lines + row;
-				render_text_sized(renderer, &font, line->chars, line->size,
-								  vec2f(0.0, 0.0), 0xFFFFFFFF, FONT_SCALE);
+				render_text_sized(
+					renderer, &font, line->chars, line->size,
+					vec2f(0.0f, row * FONT_CHAR_HEIGHT * FONT_SCALE),
+					0xFFFFFFFF, FONT_SCALE);
 			}
 			render_cursor(renderer, &font);
 
 			SDL_RenderPresent(renderer);
-			// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL: Rendered!");
 		}
 	}
 
