@@ -82,15 +82,27 @@ static void editor_grow(Editor *editor, size_t reqd_lines) {
 	}
 }
 
+void editor_insert_new_line(Editor *editor) {
+	if (editor->cursor_col > editor->size) {
+		editor->cursor_col = editor->size;
+	}
+
+	editor_grow(editor, 1);
+
+	const size_t line_size = sizeof(editor->lines[0]);
+	memmove(editor->lines + (editor->cursor_row + 1) * line_size,
+			editor->lines + editor->cursor_row * line_size,
+			editor->size - editor->cursor_row * line_size);
+	memset(&editor->lines[editor->cursor_row], 0, line_size);
+	editor->size += 1;
+}
+
 void editor_push_new_line(Editor *editor) {
 	editor_grow(editor, 1);
-	
 	editor->size += 1;
 }
 
 void editor_insert_text_before_cursor(Editor *editor, const char *text) {
-	// assert(false && "todo");
-
 	if (editor->cursor_row >= editor->size) {
 		if (editor->size > 0) {
 			editor->cursor_row = editor->size - 1;

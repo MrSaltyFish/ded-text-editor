@@ -1,17 +1,23 @@
-[2025-01-23 09:21:30.840311 UTC] [Log] [App] SDL-LOG: This is an informational log.
-[2025-01-23 09:21:30.840352 UTC] [Wrn] [Asr] SDL-LOG: This is a warning log.
-[2025-01-23 09:21:30.840355 UTC] [Err] [Err] SDL-LOG: This is an error log.
-[2025-01-23 09:21:30.840358 UTC] [Log] [App] SDL-LOG: Starting Initialization...
-[2025-01-23 09:21:31.607040 UTC] [Log] [App] SDL-LOG: Received text input: a
-[2025-01-23 09:21:31.654545 UTC] [Log] [App] SDL-LOG: Received text input: s
-[2025-01-23 09:21:31.718651 UTC] [Log] [App] SDL-LOG: Received text input: d
-[2025-01-23 09:21:31.846906 UTC] [Log] [App] SDL-LOG: Received text input: w
-[2025-01-23 09:21:31.966526 UTC] [Log] [App] SDL-LOG: Received text input: p
-[2025-01-23 09:21:31.982622 UTC] [Log] [App] SDL-LOG: Received text input: 9
-[2025-01-23 09:21:31.999429 UTC] [Log] [App] SDL-LOG: Received text input: u
-[2025-01-23 09:21:31.999993 UTC] [Log] [App] SDL-LOG: Received text input: 8
-[2025-01-23 09:21:32.038908 UTC] [Log] [App] SDL-LOG: Received text input: h
-[2025-01-23 09:21:32.039645 UTC] [Log] [App] SDL-LOG: Received text input: y
-[2025-01-23 09:21:32.127133 UTC] [Log] [App] SDL-LOG: Received text input: a
-[2025-01-23 09:21:32.158433 UTC] [Log] [App] SDL-LOG: Received text input: e
-[2025-01-23 09:21:32.214697 UTC] [Log] [App] SDL-LOG: Received text input: f
+[2025-01-23 09:32:19.394014 UTC] [Log] [App] SDL-LOG: This is an informational log.
+[2025-01-23 09:32:19.394044 UTC] [Wrn] [Asr] SDL-LOG: This is a warning log.
+[2025-01-23 09:32:19.394047 UTC] [Err] [Err] SDL-LOG: This is an error log.
+[2025-01-23 09:32:19.394049 UTC] [Log] [App] SDL-LOG: Starting Initialization...
+[2025-01-23 09:32:20.044239 UTC] [Log] [App] SDL-LOG: Received text input: a
+[2025-01-23 09:32:20.108209 UTC] [Log] [App] SDL-LOG: Received text input: s
+[2025-01-23 09:32:20.156283 UTC] [Log] [App] SDL-LOG: Received text input: d
+[2025-01-23 09:32:20.284303 UTC] [Log] [App] SDL-LOG: Received text input: w
+[2025-01-23 09:32:20.380137 UTC] [Log] [App] SDL-LOG: Received text input: a
+[2025-01-23 09:32:20.460140 UTC] [Log] [App] SDL-LOG: Received text input: i
+[2025-01-23 09:32:20.500518 UTC] [Log] [App] SDL-LOG: Received text input: k
+[2025-01-23 09:32:20.500951 UTC] [Log] [App] SDL-LOG: Received text input: y
+[2025-01-23 09:32:20.532279 UTC] [Log] [App] SDL-LOG: Received text input: g
+[2025-01-23 09:32:20.596840 UTC] [Log] [App] SDL-LOG: Received text input: a
+[2025-01-23 09:32:20.612183 UTC] [Log] [App] SDL-LOG: Received text input: s
+[2025-01-23 09:32:20.644301 UTC] [Log] [App] SDL-LOG: Received text input: r
+[2025-01-23 09:32:20.724458 UTC] [Log] [App] SDL-LOG: Received text input: g
+[2025-01-23 09:32:20.724936 UTC] [Log] [App] SDL-LOG: Received text input: v
+[2025-01-23 09:32:22.572334 UTC] [Log] [App] SDL-LOG: Received text input:  
+[2025-01-23 09:32:23.078512 UTC] [Log] [App] SDL-LOG: Received text input:  
+[2025-01-23 09:32:23.109987 UTC] [Log] [App] SDL-LOG: Received text input:  
+[2025-01-23 09:32:23.141121 UTC] [Log] [App] SDL-LOG: Received text input:  
+[2025-01-23 09:32:23.172433 UTC] [Log] [App] SDL-LOG: Received text input:  

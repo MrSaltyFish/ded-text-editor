@@ -59,6 +59,11 @@
   "files.associations": {
     "la.h": "c",
     "editor.h": "c",
-    "vector": "c"
+    "vector": "c",
+    "array": "c",
+    "string_view": "c",
+    "format": "c",
+    "initializer_list": "c",
+    "span": "c"
   }
 }
