@@ -1,6 +1,6 @@
 CC = gcc
 SRC = main.c
-DEPENDS = la.c buffer.c
+DEPENDS = la.c editor.c
 OUT = te
 CFLAGS = -Wall -Wextra -std=c11 -pedantic -ggdb `pkg-config --cflags SDL2`
 LIBS = `pkg-config --libs SDL2` -lm

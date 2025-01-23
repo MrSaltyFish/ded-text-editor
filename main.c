@@ -310,7 +310,7 @@ int main(int argc, char **argv) {
 
 						} break;
 						case SDLK_DELETE: {
-							line_backspace(&line, cursor);
+							line_delete(&line, cursor);
 						} break;
 						case SDLK_LEFT: {
 							if (cursor > 0) {
