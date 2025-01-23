@@ -99,6 +99,8 @@ void editor_insert_new_line(Editor *editor) {
 
 void editor_push_new_line(Editor *editor) {
 	editor_grow(editor, 1);
+	memset(&editor->lines[editor->size], 0, sizeof(editor->lines[0]));
+
 	editor->size += 1;
 }
 
@@ -134,4 +136,13 @@ void editor_delete(Editor *editor) {
 		}
 	}
 	line_delete(&editor->lines[editor->cursor_row], &editor->cursor_col);
+}
+
+const char *render_char_under_cursor(const Editor *editor) {
+	if (editor->cursor_row < editor->size) {
+		if (editor->cursor_col < editor->lines[editor->cursor_row].size) {
+			return &editor->lines[editor->cursor_row].chars[editor->cursor_col];
+		}
+	}
+	return NULL;
 }

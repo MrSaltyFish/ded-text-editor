@@ -26,3 +26,6 @@ build: $(BUILD_DIR)/$(OUT)
 # Run the compiled program
 run: $(BUILD_DIR)/$(OUT)
 	./$(BUILD_DIR)/$(OUT)
+
+debug: $(BUILD_DIR)/$(OUT)
+	gdb ./$(BUILD_DIR)/$(OUT)
