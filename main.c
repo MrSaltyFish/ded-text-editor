@@ -260,9 +260,21 @@ int main(int argc, char **argv) {
 	 ********************************/
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Starting Initialization...");
 
+	(void)argc;
+	(void)argv;
+
+	editor_insert_text_before_cursor(&editor, "adsdjkhgasdkjhgadsf");
+	editor_insert_new_line(&editor);
+	editor_insert_text_before_cursor(&editor, "adsfasd");
+	editor_insert_new_line(&editor);
+	editor_insert_text_before_cursor(&editor, "2342345");
+	editor_insert_new_line(&editor);
+	editor_insert_text_before_cursor(&editor, "5654fdg");
+	editor_insert_new_line(&editor);
+
 	scc(SDL_Init(SDL_INIT_VIDEO));
 
-	SDL_Window *window = scp(SDL_CreateWindow("Text Editor", 400, 400, 900, 800,
+	SDL_Window *window = scp(SDL_CreateWindow("Text Editor", 200, 400, 800, 600,
 											  SDL_WINDOW_RESIZABLE));
 	SDL_LogInfo(SDL_LOG_CATEGORY_SYSTEM, "SDL Window: \n");
 

@@ -90,8 +90,8 @@ void editor_insert_new_line(Editor *editor) {
 	editor_grow(editor, 1);
 
 	const size_t line_size = sizeof(editor->lines[0]);
-	memmove(editor->lines + (editor->cursor_row + 1) * line_size,
-			editor->lines + (editor->cursor_row) * line_size,
+	memmove(editor->lines + (editor->cursor_row + 1),
+			editor->lines + (editor->cursor_row),
 			(editor->size - editor->cursor_row) * line_size);
 	memset(&editor->lines[editor->cursor_row + 1], 0, line_size);
 	editor->cursor_row += 1;
