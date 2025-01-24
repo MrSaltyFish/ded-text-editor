@@ -17,8 +17,10 @@
 #include "headers/la.h"
 #include "headers/sdllogger.h"
 #define STB_IMAGE_IMPLEMENTATION
+#include "./headers/sv.h"
 #include "headers/editor.h"
 #include "headers/stb_image.h"
+#define SV_IMPLEMENTATION
 
 #define ASCII_DISPLAY_LOW 32
 #define ASCII_DISPLAY_HIGH 126
@@ -229,6 +231,8 @@ void render_cursor(SDL_Renderer *renderer, const Font *font) {
 	}
 }
 
+void usage(FILE *stream) { fprintf(stream, "Usage: te [FILE-PATH]\n"); }
+
 // TODO: Delete a line
 // TODO: Split line on enter
 // TODO: Save/Load file
@@ -263,6 +267,15 @@ int main(int argc, char **argv) {
 
 	(void)argc;
 	(void)argv;
+	const char *file_path = NULL;
+
+	if (argc > 1) {
+		file_path = argv[1];
+	}
+
+	if (file_path) {
+		editor_load_from_file(&editor, file_path);
+	}
 
 	scc(SDL_Init(SDL_INIT_VIDEO));
 
