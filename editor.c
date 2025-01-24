@@ -1,7 +1,9 @@
 #include "./headers/editor.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -63,6 +65,23 @@ void line_delete(Line *line, size_t *col) {
 }
 
 // ================ Editor ====================
+
+void editor_save_to_file(const Editor *editor, const char *file_path) {
+	FILE *f = fopen(file_path, "w");
+	if (f == NULL) {
+		fprintf(stdout, "ERROR: Cannot open file: %s | ERROR CODE: %s\n",
+				file_path, strerror(errno));
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR,
+					 "ERROR: Cannot open file: %s | ERROR CODE: %s\n",
+					 file_path, strerror(errno));
+	}
+	for (size_t row = 0; row < editor->size; ++row) {
+		fwrite(editor->lines[row].chars, 1, editor->lines[row].size, f);
+		fputc('\n', f);
+	}
+
+	fclose(f);
+}
 
 static void editor_grow(Editor *editor, size_t reqd_lines) {
 	size_t new_capacity = editor->capacity;
