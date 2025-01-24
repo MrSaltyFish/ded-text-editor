@@ -17,6 +17,7 @@
 #include "headers/la.h"
 #include "headers/sdllogger.h"
 #define STB_IMAGE_IMPLEMENTATION
+#include "headers/editor.h"
 #include "headers/stb_image.h"
 
 #define ASCII_DISPLAY_LOW 32
@@ -172,15 +173,6 @@ void set_texture_color(SDL_Texture *texture, Uint32 color) {
 
 void render_text_sized(SDL_Renderer *renderer, Font *font, const char *text,
 					   size_t text_size, Vec2f pos, Uint32 color, float scale) {
-	// Replaced by set_texture_color()
-	// int r = (color >> (8 * 0)) & 0xff;
-	// int g = (color >> (8 * 1)) & 0xff;
-	// int b = (color >> (8 * 2)) & 0xff;
-	// int a = (color >> (8 * 3)) & 0xff;
-
-	// scc(SDL_SetTextureColorMod(font->spritesheet, r, g, b));
-	// scc(SDL_SetTextureAlphaMod(font->spritesheet, a));
-
 	set_texture_color(font->spritesheet, color);
 
 	Vec2f pen = pos;
@@ -188,7 +180,6 @@ void render_text_sized(SDL_Renderer *renderer, Font *font, const char *text,
 		render_char(renderer, font, text[i], pen, scale);
 		pen.x += FONT_CHAR_WIDTH * scale;
 	}
-	// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Text displayed.");
 }
 
 /*
@@ -200,53 +191,21 @@ void render_text(SDL_Renderer *renderer, Font *font, const char *text,
 }
 
 /*
- * Input buffer
+ * Input line->chars
  */
-#define BUFFER_CAPACITY 1024
+// Line line = {0};
+// size_t cursor = 0;
 
-char buffer[BUFFER_CAPACITY];
-size_t buffer_size = 0;
-size_t buffer_cursor = 0;
-
-void buffer_insert_text_before_cursor(const char *text) {
-	size_t text_size = strlen(text);
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Text: %s", text);
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Text size: %llu", text_size);
-	const size_t free_space = BUFFER_CAPACITY - buffer_size;
-	if (text_size > free_space) {
-		text_size = free_space;
-	}
-	memmove(buffer + buffer_cursor + text_size, buffer + buffer_cursor,
-			buffer_size - buffer_cursor);
-	memcpy(buffer + buffer_cursor, text, text_size);
-	buffer_size += text_size;
-	buffer_cursor += text_size;
-}
-
-void buffer_backspace(void) {
-	if (buffer_cursor > 0 && buffer_size > 0) {
-		memmove(buffer + buffer_cursor - 1, buffer + buffer_cursor,
-				buffer_size - buffer_cursor);
-		buffer_size -= 1;
-		buffer_cursor -= 1;
-	}
-}
-
-void buffer_delete(void) {
-	if (buffer_cursor < buffer_size && buffer_size > 0) {
-		memmove(buffer + buffer_cursor, buffer + buffer_cursor + 1,
-				buffer_size + buffer_cursor);
-		buffer_size -= 1;
-	}
-}
+// Editor
+Editor editor = {0};
 
 /*
  * This is code to just display the cursor
  */
 
 void render_cursor(SDL_Renderer *renderer, const Font *font) {
-	Vec2f pos =
-		vec2f((float)buffer_cursor * FONT_CHAR_WIDTH * FONT_SCALE, 0.0f);
+	Vec2f pos = vec2f((float)editor.cursor_col * FONT_CHAR_WIDTH * FONT_SCALE,
+					  (float)editor.cursor_row * FONT_CHAR_HEIGHT * FONT_SCALE);
 	const SDL_Rect rect = {
 		.x = (int)floorf(pos.x),
 		.y = (int)floorf(pos.y),
@@ -254,42 +213,28 @@ void render_cursor(SDL_Renderer *renderer, const Font *font) {
 		.h = FONT_CHAR_HEIGHT * FONT_SCALE,
 	};
 
-	// int r = (color >> (8 * 0)) & 0xff;
-	// int g = (color >> (8 * 1)) & 0xff;
-	// int b = (color >> (8 * 2)) & 0xff;
-	// int a = (color >> (8 * 3)) & 0xff;
-
-	int r = 0xFF;
-	int g = 0xFF;
-	int b = 0xFF;
-	int a = 0xFF;
+	Uint32 color = 0xFFFFFFFF;
+	int r = (color >> (8 * 0)) & 0xff;
+	int g = (color >> (8 * 1)) & 0xff;
+	int b = (color >> (8 * 2)) & 0xff;
+	int a = (color >> (8 * 3)) & 0xff;
 
 	scc(SDL_SetRenderDrawColor(renderer, r, g, b, a));
 	scc(SDL_RenderFillRect(renderer, &rect));
 
-	set_texture_color(font->spritesheet, 0xFF000000);
-
-	if (buffer_cursor < buffer_size) {
-		render_char(renderer, font, buffer[buffer_cursor], pos, FONT_SCALE);
+	const char *c = render_char_under_cursor(&editor);
+	if (c) {
+		set_texture_color(font->spritesheet, 0xFF000000);
+		render_char(renderer, font, *c, pos, FONT_SCALE);
 	}
 }
 
-// TODO: Multiple lines
+// TODO: Delete a line
+// TODO: Split line on enter
 // TODO: Save/Load file
 // TODO: Jump forward/backward by a word
 // TODO: Delete a word
 // TODO: Blinking cursor
-
-// // Debug Purposes
-// int main1(int argc, char **argv) {
-// 	buffer_insert_text_before_cursor("Hello, World");
-// 	buffer_cursor = 5;
-// 	buffer_insert_text_before_cursor("Foo, bar");
-// 	char text[100] = {0};
-// 	strcpy(text, buffer);
-// 	int i;
-// 	return 0;
-// }
 
 /********************************
  *		MAIN Starts here		*
@@ -316,9 +261,12 @@ int main(int argc, char **argv) {
 	 ********************************/
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Starting Initialization...");
 
+	(void)argc;
+	(void)argv;
+
 	scc(SDL_Init(SDL_INIT_VIDEO));
 
-	SDL_Window *window = scp(SDL_CreateWindow("Text Editor", 400, 400, 900, 800,
+	SDL_Window *window = scp(SDL_CreateWindow("Text Editor", 200, 400, 800, 600,
 											  SDL_WINDOW_RESIZABLE));
 	SDL_LogInfo(SDL_LOG_CATEGORY_SYSTEM, "SDL Window: \n");
 
@@ -339,25 +287,41 @@ int main(int argc, char **argv) {
 				case SDL_KEYDOWN: {
 					switch (event.key.keysym.sym) {
 						case SDLK_BACKSPACE: {
-							buffer_backspace();
+							editor_backspace(&editor);
 
 						} break;
+						case SDLK_F2: {
+							editor_save_to_file(&editor, "output");
+						} break;
+						case SDLK_RETURN:
+						case SDLK_RETURN2: {
+							editor_insert_new_line(&editor);
+						} break;
 						case SDLK_DELETE: {
-							buffer_delete();
+							editor_delete(&editor);
 						} break;
 						case SDLK_LEFT: {
-							if (buffer_cursor > 0) {
-								buffer_cursor -= 1;
+							if (editor.cursor_col > 0) {
+								editor.cursor_col -= 1;
 							}
 						} break;
 						case SDLK_RIGHT: {
-							if (buffer_cursor < buffer_size) {
-								buffer_cursor += 1;
+							// editor.cursor_col += 1;
+
+							if (editor.cursor_col <
+								editor.lines[editor.cursor_row].size) {
+								editor.cursor_col += 1;
 							}
 						} break;
 						case SDLK_UP: {
+							if (editor.cursor_row > 0) {
+								editor.cursor_row -= 1;
+							}
 						} break;
 						case SDLK_DOWN: {
+							if (editor.cursor_row < editor.size) {
+								editor.cursor_row += 1;
+							}
 						} break;
 					}
 				} break;
@@ -365,19 +329,23 @@ int main(int argc, char **argv) {
 				case SDL_TEXTINPUT: {
 					SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
 								"Received text input: %s", event.text.text);
-					buffer_insert_text_before_cursor(event.text.text);
+					editor_insert_text_before_cursor(&editor, event.text.text);
 				} break;
 			}
 
-			scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255));
+			scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0));
 			scc(SDL_RenderClear(renderer));
 
-			render_text_sized(renderer, &font, buffer, buffer_size,
-							  vec2f(0.0, 0.0), 0xFFFFFFFF, FONT_SCALE);
+			for (size_t row = 0; row < editor.size; ++row) {
+				const Line *line = editor.lines + row;
+				render_text_sized(
+					renderer, &font, line->chars, line->size,
+					vec2f(0.0f, (float)row * FONT_CHAR_HEIGHT * FONT_SCALE),
+					0xFFFFFFFF, FONT_SCALE);
+			}
 			render_cursor(renderer, &font);
 
 			SDL_RenderPresent(renderer);
-			// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "SDL: Rendered!");
 		}
 	}
 
