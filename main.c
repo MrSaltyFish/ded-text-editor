@@ -20,7 +20,6 @@
 #include "./headers/sv.h"
 #include "headers/editor.h"
 #include "headers/stb_image.h"
-#define SV_IMPLEMENTATION
 
 #define ASCII_DISPLAY_LOW 32
 #define ASCII_DISPLAY_HIGH 126
