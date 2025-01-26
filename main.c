@@ -380,7 +380,7 @@ int main(int argc, char **argv) {
 					editor_insert_text_before_cursor(&editor, event.text.text);
 				} break;
 			}
-			{
+		}
 				const Vec2f cursor_pos = vec2f(
 					(float)editor.cursor_col * FONT_CHAR_WIDTH * FONT_SCALE,
 					(float)editor.cursor_row * FONT_CHAR_HEIGHT * FONT_SCALE);
@@ -392,7 +392,7 @@ int main(int argc, char **argv) {
 				// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
 				// 			"Camera position: (%f, %f)\n", camera_vel.x,
 				// 			camera_vel.y);
-			}
+			
 
 			scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0));
 			scc(SDL_RenderClear(renderer));
@@ -417,7 +417,7 @@ int main(int argc, char **argv) {
 			if (duration < delta_time_ms) {
 				SDL_Delay(delta_time_ms - duration);
 			}
-		}
+		
 	}
 
 	// Clean up and quit SDL
