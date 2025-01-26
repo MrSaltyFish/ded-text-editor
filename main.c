@@ -201,7 +201,9 @@ void render_text(SDL_Renderer *renderer, Font *font, const char *text,
 
 // Editor
 Editor editor = {0};
-
+Vec2f camera_pos = {0};
+Vec2f camera_vel = {0};
+Vec2f camera_acc = {0};
 /*
  * This is code to just display the cursor
  */
@@ -360,10 +362,11 @@ int main(int argc, char **argv) {
 
 			for (size_t row = 0; row < editor.size; ++row) {
 				const Line *line = editor.lines + row;
-				render_text_sized(
-					renderer, &font, line->chars, line->size,
+				const Vec2f line_pos = vec2f_sub(
 					vec2f(0.0f, (float)row * FONT_CHAR_HEIGHT * FONT_SCALE),
-					0xFFFFFFFF, FONT_SCALE);
+					camera_pos);
+				render_text_sized(renderer, &font, line->chars, line->size,
+								  line_pos, 0xFFFFFFFF, FONT_SCALE);
 			}
 			render_cursor(renderer, &font);
 
