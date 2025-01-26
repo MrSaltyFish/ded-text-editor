@@ -183,7 +183,7 @@ void editor_load_from_file(Editor *editor, const char *file_path) {
 		exit(1);
 	}
 
-	static char chunk[1024 * 640];
+	static char chunk[640 * 1024];
 	while (!feof(f)) {
 		size_t n = fread(chunk, 1, sizeof(chunk), f);
 		String_View chunk_sv = {.data = chunk, .count = n};

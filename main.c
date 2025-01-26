@@ -303,6 +303,9 @@ int main(int argc, char **argv) {
 
 						} break;
 						case SDLK_F2: {
+							if (file_path) {
+								editor_save_to_file(&editor, file_path);
+							}
 							editor_save_to_file(&editor, "output");
 						} break;
 						case SDLK_RETURN:
