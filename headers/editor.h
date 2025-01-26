@@ -1,6 +1,7 @@
 #ifndef EDITOR_H_
 #define EDITOR_H_
 #include <SDL2/SDL.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "./sv.h"
@@ -28,7 +29,7 @@ typedef struct {
 
 } Editor;
 
-void editor_load_from_file(Editor *editor, const char *file_path);
+void editor_load_from_file(Editor *editor, FILE *file);
 void editor_save_to_file(const Editor *editor, const char *file_path);
 
 void editor_insert_new_line(Editor *editor);
