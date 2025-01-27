@@ -155,11 +155,13 @@ void render_char(SDL_Renderer *renderer, const Font *font, char c, Vec2f pos,
 		.h = (int)floorf(FONT_CHAR_HEIGHT * scale),
 	};
 
-	size_t index = '?' - ASCII_DISPLAY_LOW;
+	size_t index = c - ASCII_DISPLAY_LOW;  // ASCII differnce
 
-	if (ASCII_DISPLAY_LOW <= c && c <= ASCII_DISPLAY_HIGH) {
-		index = c - ASCII_DISPLAY_LOW;	// ASCII differnce
-	}
+	// size_t index = '?' - ASCII_DISPLAY_LOW;
+
+	// if (ASCII_DISPLAY_LOW <= c && c <= ASCII_DISPLAY_HIGH) {
+	// 	index = c - ASCII_DISPLAY_LOW;	// ASCII differnce
+	// }
 
 	// assert(c >= ASCII_DISPLAY_LOW);
 	// assert(c <= ASCII_DISPLAY_HIGH);
@@ -320,6 +322,7 @@ int main(int argc, char **argv) {
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
 				"SDL Window: font_load_from_file Created!\n");
 	bool quit = false;
+	int camera_speed = CAMERA_SPEED;
 	while (!quit) {
 		const Uint32 start = SDL_GetTicks();
 		SDL_Event event = {0};
@@ -340,6 +343,29 @@ int main(int argc, char **argv) {
 							}
 							editor_save_to_file(&editor, "output");
 						} break;
+						// case SDLK_F5: {
+						// 	if (camera_speed < 3000) {
+						// 		camera_speed += 10;
+						// 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+						// 					"Camera Speed Increased:  %d",
+						// 					camera_speed);
+						// 	}
+						// } break;
+						// case SDLK_F6: {
+						// 	if (camera_speed > 6) {
+						// 		camera_speed -= 5;
+						// 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+						// 					"Camera Speed Reduced:  %d",
+						// 					camera_speed);
+						// 	}
+						// } break;
+						// case SDLK_F7: {
+						// 	if (camera_speed > 6) {
+						// 		camera_speed = 0;
+						// 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+						// 					"Camera Speed :  0");
+						// 	}
+						// } break;
 						case SDLK_RETURN:
 						case SDLK_RETURN2: {
 							editor_insert_new_line(&editor);
@@ -381,43 +407,41 @@ int main(int argc, char **argv) {
 				} break;
 			}
 		}
-				const Vec2f cursor_pos = vec2f(
-					(float)editor.cursor_col * FONT_CHAR_WIDTH * FONT_SCALE,
-					(float)editor.cursor_row * FONT_CHAR_HEIGHT * FONT_SCALE);
-				camera_vel = vec2f_mul(vec2f_sub(cursor_pos, camera_pos),
-									   vec2fs(CAMERA_SPEED));
-				camera_pos = vec2f_add(
-					camera_pos, vec2f_mul(camera_vel, vec2fs(DELTA_TIME)));
+		const Vec2f cursor_pos =
+			vec2f((float)editor.cursor_col * FONT_CHAR_WIDTH * FONT_SCALE,
+				  (float)editor.cursor_row * FONT_CHAR_HEIGHT * FONT_SCALE);
+		camera_vel =
+			vec2f_mul(vec2f_sub(cursor_pos, camera_pos), vec2fs(camera_speed));
+		camera_pos =
+			vec2f_add(camera_pos, vec2f_mul(camera_vel, vec2fs(DELTA_TIME)));
 
-				// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-				// 			"Camera position: (%f, %f)\n", camera_vel.x,
-				// 			camera_vel.y);
-			
+		// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+		// 			"Camera position: (%f, %f)\n", camera_vel.x,
+		// 			camera_vel.y);
 
-			scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0));
-			scc(SDL_RenderClear(renderer));
+		scc(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0));
+		scc(SDL_RenderClear(renderer));
 
-			for (size_t row = 0; row < editor.size; ++row) {
-				const Line *line = editor.lines + row;
-				const Vec2f line_pos = camera_project_point(
-					window,
-					vec2f(0.0f, (float)row * FONT_CHAR_HEIGHT * FONT_SCALE));
-				render_text_sized(renderer, &font, line->chars, line->size,
-								  line_pos, 0xFFFFFFFF, FONT_SCALE);
-			}
-			render_cursor(renderer, window, &font);
+		for (size_t row = 0; row < editor.size; ++row) {
+			const Line *line = editor.lines + row;
+			const Vec2f line_pos = camera_project_point(
+				window,
+				vec2f(0.0f, (float)row * FONT_CHAR_HEIGHT * FONT_SCALE));
+			render_text_sized(renderer, &font, line->chars, line->size,
+							  line_pos, 0xFFFFFFFF, FONT_SCALE);
+		}
+		render_cursor(renderer, window, &font);
 
-			SDL_RenderPresent(renderer);
+		SDL_RenderPresent(renderer);
 
-			const Uint32 duration = SDL_GetTicks() - start;
-			const Uint32 delta_time_ms = 1000 / FPS;
-			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
-						"Rendered frame, duration: %d", duration);
+		const Uint32 duration = SDL_GetTicks() - start;
+		const Uint32 delta_time_ms = 1000 / FPS;
+		// SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,
+		// 			"Rendered frame, duration: %d", duration);
 
-			if (duration < delta_time_ms) {
-				SDL_Delay(delta_time_ms - duration);
-			}
-		
+		if (duration < delta_time_ms) {
+			SDL_Delay(delta_time_ms - duration);
+		}
 	}
 
 	// Clean up and quit SDL

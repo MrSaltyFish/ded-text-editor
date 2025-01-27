@@ -70,6 +70,7 @@
     "sv.h": "c",
     "assert.h": "c",
     "sdllogger.h": "c",
-    "string": "c"
+    "string": "c",
+    "variant": "c"
   }
 }
