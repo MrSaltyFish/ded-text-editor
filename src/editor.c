@@ -1,4 +1,4 @@
-#include "./headers/editor.h"
+#include "./editor.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -6,8 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SV_IMPLEMENTATION
-#include "./headers/sv.h"
+#include "./sv.h"
 
 #define LINE_INIT_CAPACITY 1024
 #define EDITOR_INIT_CAPACITY 128

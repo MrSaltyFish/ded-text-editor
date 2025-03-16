@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "./sv.h"
-
 typedef struct {
 	char *chars;
 	size_t capacity;

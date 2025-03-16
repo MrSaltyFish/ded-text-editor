@@ -1,4 +1,4 @@
-#include "./headers/la.h"
+#include "./la.h"
 
 Vec2f vec2fs(float s) { return vec2f(s, s); }
 

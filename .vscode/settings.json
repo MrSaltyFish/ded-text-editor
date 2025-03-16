@@ -71,6 +71,15 @@
     "assert.h": "c",
     "sdllogger.h": "c",
     "string": "c",
-    "variant": "c"
+    "variant": "c",
+    "glew.h": "c",
+    "sdl_opengl.h": "c",
+    "font.h": "c",
+    "file.h": "c",
+    "system_error": "c",
+    "sdl_extra.h": "c",
+    "sdl.h": "c",
+    "font_actual.h": "c",
+    "stb_image.h": "c"
   }
 }

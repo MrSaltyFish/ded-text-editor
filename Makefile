@@ -2,14 +2,28 @@ CC = gcc
 SRC = main.c
 DEPENDS = la.c editor.c
 OUT = te
-CFLAGS = -Wall -Wextra -std=c11 -pedantic -ggdb `pkg-config --cflags SDL2`
-LIBS = `pkg-config --libs SDL2` -lm
+# GLEW headers # GLEW headers # SDL2 flags
+
+PKGS = sdl2 glew
+CFLAGS = -Wall -Wextra -std=c11 -pedantic -ggdb \
+    -IC:/msys64/mingw64/include \
+    -IC:/msys64/mingw64/include/GL \
+    `pkg-config --cflags $(PKGS)`
+
+# GLEW library path # Link to GLEW
+LIBS = `pkg-config --libs SDL2` -lm \
+    -LC:/msys64/mingw64/lib \
+    -lglew32 -lopengl32
+
+SRCS=src/main.c src/la.c src/editor.c src/font.c src/sdl_extra.c
+
 BUILD_DIR = build
 
 # Build the program
-$(BUILD_DIR)/$(OUT): $(SRC)
+$(BUILD_DIR)/$(OUT): $(SRCS)
 	@mkdir -p $(BUILD_DIR)  # Create build directory if it doesn't exist
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(OUT) $(SRC) $(DEPENDS) $(LIBS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(OUT) $(SRCS) $(LIBS)
+# $(DEPENDS)
 
 # Default target: Build and then run
 all: $(BUILD_DIR)/$(OUT)
@@ -18,14 +32,14 @@ all: $(BUILD_DIR)/$(OUT)
 
 # Clean up the build directory and all compiled files
 clean:
-	rm -rf $(BUILD_DIR) $(TEMP_OUT)
-
-# Build target
-build: $(BUILD_DIR)/$(OUT)
+	rm -rf $(BUILD_DIR)
 
 # Run the compiled program
 run: $(BUILD_DIR)/$(OUT)
 	./$(BUILD_DIR)/$(OUT)
 
 debug: $(BUILD_DIR)/$(OUT)
-	gdb ./$(BUILD_DIR)/$(OUT)
+	gdb -tui ./$(BUILD_DIR)/$(OUT)
+
+te: $(SRCS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/te $(SRCS) $(LIBS)
