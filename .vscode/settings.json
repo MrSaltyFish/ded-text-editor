@@ -71,6 +71,7 @@
     "assert.h": "c",
     "sdllogger.h": "c",
     "string": "c",
-    "variant": "c"
+    "variant": "c",
+    "stb_image.h": "c"
   }
 }
