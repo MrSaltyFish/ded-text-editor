@@ -1,11 +1,16 @@
-#include "headers/file.h"
+#include "file.h"
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char *slurp_file(const char *file_path) {
-#define SLURP_FILE_PANIC                                               \
-	do {                                                               \
-		fprintf(stderr, "Could not read file `%s`: `%s`\n", file_path, \
-				strerror(errno));                                      \
-		exit(1);                                                       \
+#define SLURP_FILE_PANIC                                             \
+	do {                                                             \
+		fprintf(stderr, "Could not read file `%s`: %s\n", file_path, \
+				strerror(errno));                                    \
+		exit(1);                                                     \
 	} while (0)
 
 	FILE *f = fopen(file_path, "r");
@@ -30,6 +35,3 @@ char *slurp_file(const char *file_path) {
 	return buffer;
 #undef SLURP_FILE_PANIC
 }
-
-#endif
-#endif

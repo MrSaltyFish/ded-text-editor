@@ -80,6 +80,12 @@
     "sdl_extra.h": "c",
     "sdl.h": "c",
     "font_actual.h": "c",
-    "stb_image.h": "c"
+    "stb_image.h": "c",
+    "errno.h": "c",
+    "stdio.h": "c",
+    "gl.h": "c",
+    "sdl_opengl_glext.h": "c",
+    "stdlib.h": "c",
+    "gl_extra.h": "c"
   }
 }
