@@ -17,7 +17,7 @@ BUILD_DIR = build
 # Build the program
 $(BUILD_DIR)/$(OUT): $(SRCS)
 	@mkdir -p $(BUILD_DIR)  # Create build directory if it doesn't exist
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(OUT) $(SRCS) $(LIBS)
+	$(CC) $(CFLAGS) -g -o $(BUILD_DIR)/$(OUT) $(SRCS) $(LIBS)
 
 # Default target: Build and then run
 all: $(BUILD_DIR)/$(OUT)

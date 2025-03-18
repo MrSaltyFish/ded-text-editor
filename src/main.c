@@ -38,6 +38,8 @@
 #include <GL/glew.h>
 #define GL_GLEXT_PROTOTYPES
 #include <SDL2/SDL_opengl.h>
+
+#include "gl_extra.h"
 //------ Flags for the app ------
 #define OPENGL_RENDERER	 // Comment to run on SDL
 
@@ -71,12 +73,6 @@ void render_cursor(SDL_Renderer *renderer, SDL_Window *window,
 		.w = FONT_CHAR_WIDTH * FONT_SCALE,
 		.h = FONT_CHAR_HEIGHT * FONT_SCALE,
 	};
-
-	// Uint32 color = 0xFFFFFFFF;
-	// int r = (color >> (8 * 0)) & 0xff;
-	// int g = (color >> (8 * 1)) & 0xff;
-	// int b = (color >> (8 * 2)) & 0xff;
-	// int a = (color >> (8 * 3)) & 0xff;
 
 	scc(SDL_SetRenderDrawColor(renderer, UNHEX(0xFFFFFFFF)));
 	scc(SDL_RenderFillRect(renderer, &rect));
@@ -127,6 +123,8 @@ void MessageCallback_Log(GLenum source, GLenum type, GLuint id, GLenum severity,
 int main(int argc, char **argv) {
 	(void)argc;
 	(void)argv;
+	setvbuf(stdout, NULL, _IONBF, 0);
+	setvbuf(stderr, NULL, _IONBF, 0);
 
 	scc(SDL_Init(SDL_INIT_VIDEO));
 
@@ -179,7 +177,50 @@ int main(int argc, char **argv) {
 		fprintf(log, "Warning! GLEW_ARB_debug_output is not available!\n");
 	}
 
+	GLuint vert_shader = 0;
+	if (!compile_shader_file("./shaders/font.vert", GL_VERTEX_SHADER,
+							 &vert_shader, log)) {
+		exit(404);
+	}
+
+	GLuint frag_shader = 0;
+	if (!compile_shader_file("./shaders/font.frag", GL_FRAGMENT_SHADER,
+							 &frag_shader, log)) {
+		exit(405);
+	}
+
+	GLuint program = 0;
+
+	if (!link_program(vert_shader, frag_shader, &program)) {
+		fprintf(log, "Cannot Link Program\n");
+		exit(406);
+	}
+	fprintf(log, "Linked Program\n");
+
+	glUseProgram(program);
+
+	bool quit = false;
+
+	while (!quit) {
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+				case SDL_QUIT:
+					quit = true;
+					break;
+				case SDL_KEYDOWN: {
+					switch (event.key.keysym.sym) {
+						case SDLK_g: {
+							quit = true;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	fclose(log);
+
 	return 0;
 }
 

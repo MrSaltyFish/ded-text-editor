@@ -78,18 +78,24 @@ bool compile_shader_source(const GLchar *source, GLenum shader_type,
 }
 
 bool compile_shader_file(const char *file_path, GLenum shader_type,
-						 GLuint *shader) {
+						 GLuint *shader, FILE *log) {
 	char *source = slurp_file_into_malloced_cstr(file_path);
+
 	if (source == NULL) {
-		fprintf(stderr, "ERROR: failed to read file `%s`: %s\n", file_path,
+		fprintf(log, "ERROR: failed to read file `%s`: %s\n", file_path,
 				strerror(errno));
 		errno = 0;
 		return false;
 	}
 	bool ok = compile_shader_source(source, shader_type, shader);
 	if (!ok) {
-		fprintf(stderr, "ERROR: failed to compile `%s` shader file\n",
-				file_path);
+		GLint logLength;
+		glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
+		char *logMessage = (char *)malloc(logLength);
+		glGetShaderInfoLog(*shader, logLength, &logLength, logMessage);
+
+		fprintf(log, "ERROR: failed to compile `%s` shader file\n", file_path);
+		fprintf(log, "ERROR: logMessage: `%s`\n", logMessage);
 	}
 	free(source);
 	return ok;
